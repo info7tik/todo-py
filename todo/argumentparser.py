@@ -18,6 +18,6 @@ class ArgUmentParser:
         assert len(self.raw_args) == 2, f"content with number must look like 'command number'"
         return int(self.raw_args[1])
 
-    def contentAsStringAndNumber(self) -> tuple[str, int]:
+    def contentAsStringAndNumber(self) -> tuple[int, str]:
         assert len(self.raw_args) == 3, f"content with number must look like 'command string number'"
         return (int(self.raw_args[1]), self.raw_args[2])

@@ -176,7 +176,7 @@ class TaskManagerTest(unittest.TestCase):
         manager.add("no project")
         no_project_task = self.__get_task(manager, "no project")
         project_name = "one-project"
-        self.assertEquals("", no_project_task.project)
+        self.assertEqual("", no_project_task.project)
         manager.set_task_project(no_project_task.id, project_name)
         manager.load()
         no_project_task = self.__get_task(manager, "no project")

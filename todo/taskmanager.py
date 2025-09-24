@@ -1,7 +1,6 @@
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 from pathlib import Path
 import json, re
-
 from todo.task import Task, EMPTY_PROJECT
 
 EMPTY_TASKS_LIST = []
@@ -45,10 +44,13 @@ class TaskManager:
     def build_done_tasks_str(self):
         self.__printed_all_tasks = DONE_HEADER + "\n"
         self.__build_task_list_str(self.done)
-        task_list_no_index = re.sub(" \([0-9]{1,3}\)", '', self.__printed_all_tasks)
+        return self.__remove_task_indexes()
+
+    def __remove_task_indexes(self):
+        task_list_no_index = re.sub(" \\([0-9]{1,3}\\)", '', self.__printed_all_tasks)
         return task_list_no_index
 
-    def __build_task_list_str(self, task_list: list[Task]) -> str:
+    def __build_task_list_str(self, task_list: list[Task]) -> None:
         if len(task_list) == 0:
             self.__printed_all_tasks += "no tasks"
         else:
@@ -59,7 +61,7 @@ class TaskManager:
             if self.__printed_all_tasks[-1] == "\n":
                 self.__printed_all_tasks = self.__printed_all_tasks[:-1]
 
-    def __sort_tasks_by_project(self, task_list: list[Task]) -> dict:
+    def __sort_tasks_by_project(self, task_list: list[Task]) -> dict[str, list[Task]]:
         sorted_tasks = {"": []}
         for task in task_list:
             if task.project not in sorted_tasks:
@@ -67,7 +69,7 @@ class TaskManager:
             sorted_tasks[task.project].append(task)
         return sorted_tasks
 
-    def __concat_tasks_with_project(self, tasks: list[Task]) -> None:
+    def __concat_tasks_with_project(self, tasks: dict[str, list[Task]]) -> None:
         for project in sorted(tasks):
             self.__concat__tasks_str(sorted(tasks[project], key=lambda task: task.description))
 
