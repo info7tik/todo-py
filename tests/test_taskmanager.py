@@ -36,10 +36,9 @@ class TaskManagerTest(unittest.TestCase):
 
     def test_load_not_existing_directory(self):
         manager = TaskManager("not_existing_dir/not_existing_file")
-        with self.assertRaises(
-            AssertionError, msg="directory does not exist so the configuration file can not be created"
-        ):
-            manager.load()
+        manager.load()
+        config_file = Path(manager.file)
+        self.assertTrue(config_file.is_file())
 
     def test_add_task(self):
         manager = self.__create_temporary_manager()

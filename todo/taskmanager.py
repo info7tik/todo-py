@@ -124,13 +124,15 @@ class TaskManager:
 
     def load(self) -> None:
         path = Path(self.file)
-        if path.is_file():
+        if path.exists():
+            assert path.is_file(), f"{self.file} must be a file not a directory"
             self.__load_file()
         else:
-            assert not path.is_file(), f"{self.file} must be a file not a directory"
+            print(f"creating the configuration file at {path.absolute()}")
             directory = path.parents[0]
             if not directory.exists():
                 directory.mkdir(parents=True)
+            assert directory.is_dir(), f"{directory} must be a directory not a file"
             self.__save()
 
     def __load_file(self):
