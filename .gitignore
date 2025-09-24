@@ -1,1 +1,3 @@
 **/__pycache__
+# The file saving the list of the tasks in the default configuration
+todo.json

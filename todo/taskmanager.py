@@ -20,7 +20,7 @@ class TaskManager:
         self.__printed_all_tasks = ""
 
     def info(self) -> None:
-        print(f"configuration file: {self.file}")
+        print(f"configuration file: {Path(self.file).absolute()}")
 
     def add(self, task_description: str) -> None:
         assert len(task_description) > 0, "no task description"
@@ -127,9 +127,10 @@ class TaskManager:
         if path.is_file():
             self.__load_file()
         else:
-            assert not path.is_dir(), f"{self.file} must be a file not a directory"
+            assert not path.is_file(), f"{self.file} must be a file not a directory"
             directory = path.parents[0]
-            assert directory.is_dir(), f"directory {directory} does not exist"
+            if not directory.exists():
+                directory.mkdir(parents=True)
             self.__save()
 
     def __load_file(self):

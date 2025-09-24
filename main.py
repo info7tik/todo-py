@@ -4,7 +4,7 @@ import sys, traceback
 from todo.taskmanager import TaskManager
 from todo.argumentparser import ArgUmentParser
 
-TODO_FILE = "~/.config/todolist/todo.json"
+TODO_FILE = "todo.json"
 
 
 def main():

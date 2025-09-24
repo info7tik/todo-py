@@ -3,8 +3,6 @@ A simple todo list manager with a command line interface.
 
 ## Installation
 ```
-vim main.py (replace the absolute path of TODO_FILE)
-mkdir <TODO_FILE> (create the directory if it does not exist)
 sudo ln -s /path/to/main.py /usr/bin/todo (create a link to the executable Python script)
 ```
 
