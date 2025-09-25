@@ -1,7 +1,10 @@
-from colorama import Fore, Style
+import re
+from json import dump, load
 from pathlib import Path
-import json, re
-from todo.task import Task, EMPTY_PROJECT
+
+from colorama import Fore, Style
+
+from todo.task import EMPTY_PROJECT, Task
 
 EMPTY_TASKS_LIST = []
 NO_INPROGRESS_TASK = -1
@@ -47,7 +50,7 @@ class TaskManager:
         return self.__remove_task_indexes()
 
     def __remove_task_indexes(self):
-        task_list_no_index = re.sub(" \\([0-9]{1,3}\\)", '', self.__printed_all_tasks)
+        task_list_no_index = re.sub(" \\([0-9]{1,3}\\)", "", self.__printed_all_tasks)
         return task_list_no_index
 
     def __build_task_list_str(self, task_list: list[Task]) -> None:
@@ -122,7 +125,7 @@ class TaskManager:
         self.done = []
         self.__save()
 
-    def load(self) -> None:
+    def load_configuration(self) -> None:
         path = Path(self.file)
         if path.exists():
             assert path.is_file(), f"{self.file} must be a file not a directory"
@@ -137,7 +140,7 @@ class TaskManager:
 
     def __load_file(self):
         with open(self.file, "r") as json_file:
-            configuration = json.load(json_file)
+            configuration = load(json_file)
             self.__next_id = 1
             self.todo = self.__load_tasks(configuration["tasks"])
             self.done = self.__load_tasks(configuration["done"])
@@ -167,4 +170,4 @@ class TaskManager:
                 "done": [task.build_to_save_str() for task in self.done],
                 "inprogress": self.inprogress,
             }
-            json.dump(configuration, json_file, indent=4)
+            dump(configuration, json_file, indent=4)

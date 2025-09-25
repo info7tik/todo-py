@@ -1,4 +1,4 @@
-class ArgUmentParser:
+class ArgumentParser:
     def __init__(self, script_args: list[str]) -> None:
         self.raw_args = script_args
 
@@ -15,9 +15,9 @@ class ArgUmentParser:
             return ""
 
     def contentAsNumber(self) -> int:
-        assert len(self.raw_args) == 2, f"content with number must look like 'command number'"
+        assert len(self.raw_args) == 2, "content with number must look like 'command number'"
         return int(self.raw_args[1])
 
     def contentAsStringAndNumber(self) -> tuple[int, str]:
-        assert len(self.raw_args) == 3, f"content with number must look like 'command string number'"
+        assert len(self.raw_args) == 3, "content with number must look like 'command string number'"
         return (int(self.raw_args[1]), self.raw_args[2])

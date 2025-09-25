@@ -1,10 +1,10 @@
 import unittest
 from pathlib import Path
+
 from colorama import Style
 
 from todo.task import Task
-from todo.taskmanager import TaskManager, NO_INPROGRESS_TASK, IN_PROGRESS_COLOR, TASKS_HEADER, DONE_HEADER
-
+from todo.taskmanager import DONE_HEADER, IN_PROGRESS_COLOR, NO_INPROGRESS_TASK, TASKS_HEADER, TaskManager
 
 NON_EMPTY_CONFIGURATION_FILE = "tests/resources/config.json"
 TEMPORARY_CONFIGURATION_FILE = "tests/resources/temp.json"
@@ -14,7 +14,7 @@ class TaskManagerTest(unittest.TestCase):
     def test_load_conf(self):
         json_path = NON_EMPTY_CONFIGURATION_FILE
         manager = TaskManager(json_path)
-        manager.load()
+        manager.load_configuration()
         self.assertEqual(123456789, manager.inprogress)
         self.assertEqual(4, len(manager.todo))
         self.assertEqual(3, len(manager.done))
@@ -26,7 +26,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertEqual(NO_INPROGRESS_TASK, manager.inprogress)
         self.assertEqual(0, len(manager.todo))
         self.assertEqual(0, len(manager.done))
-        manager.load()
+        manager.load_configuration()
         self.assertEqual(NO_INPROGRESS_TASK, manager.inprogress)
         self.assertEqual(0, len(manager.todo))
         self.assertEqual(0, len(manager.done))
@@ -36,7 +36,7 @@ class TaskManagerTest(unittest.TestCase):
 
     def test_load_not_existing_directory(self):
         manager = TaskManager("not_existing_dir/not_existing_file")
-        manager.load()
+        manager.load_configuration()
         config_file = Path(manager.file)
         self.assertTrue(config_file.is_file())
 
@@ -64,7 +64,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertEqual(1, len(manager.todo))
         self.assertEqual(description, manager.todo[0].description)
         self.assertEqual(project, manager.todo[0].project)
-        manager.load()
+        manager.load_configuration()
         self.assertEqual(1, len(manager.todo))
         self.assertEqual(description, manager.todo[0].description)
         self.assertEqual(project, manager.todo[0].project)
@@ -72,7 +72,7 @@ class TaskManagerTest(unittest.TestCase):
 
     def test_list_tasks(self):
         manager = TaskManager(NON_EMPTY_CONFIGURATION_FILE)
-        manager.load()
+        manager.load_configuration()
         todo_tasks = manager.build_todo_tasks_str()
         self.assertEqual(
             TASKS_HEADER + "\n[Project 1] Task 1 (2)\n[Project 4] Task 4 (3)\n[Project 4] Task 6 (1)\nTask 7 (4)",
@@ -114,7 +114,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertEqual(3, len(manager.todo))
         self.assertEqual(0, len(manager.done))
         manager.delete(task2_id)
-        manager.load()
+        manager.load_configuration()
         self.assertEqual(2, len(manager.todo))
         self.assertEqual(0, len(manager.done))
         task2 = [task for task in manager.todo if task.description == "task2"]
@@ -136,7 +136,7 @@ class TaskManagerTest(unittest.TestCase):
 
         manager.select_inprogress_task(task3_id)
         manager.delete(task2_id)
-        manager.load()
+        manager.load_configuration()
         task2 = [task for task in manager.todo if task.description == "task2"]
         self.assertEqual(0, len(task2))
         new_task3_id = self.__get_task_id(manager, "task3")
@@ -167,7 +167,7 @@ class TaskManagerTest(unittest.TestCase):
         manager.mark_done(task2_id)
         self.assertEqual(1, len(manager.done))
         manager.delete_done()
-        manager.load()
+        manager.load_configuration()
         self.assertEqual(0, len(manager.done))
 
     def test_set_task_project(self):
@@ -177,7 +177,7 @@ class TaskManagerTest(unittest.TestCase):
         project_name = "one-project"
         self.assertEqual("", no_project_task.project)
         manager.set_task_project(no_project_task.id, project_name)
-        manager.load()
+        manager.load_configuration()
         no_project_task = self.__get_task(manager, "no project")
         self.assertEqual(project_name, no_project_task.project)
         self.__delete_temporary_configuration()
@@ -187,7 +187,7 @@ class TaskManagerTest(unittest.TestCase):
         manager.add("project1: task1")
         manager.add("project1: task2")
         manager.add("project2: task3")
-        manager.load()
+        manager.load_configuration()
         return manager
 
     def __get_task(self, manager: TaskManager, task_description) -> Task:

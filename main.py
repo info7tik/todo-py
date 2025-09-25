@@ -1,16 +1,22 @@
 #!/bin/python3
 
-import sys, traceback
-from todo.taskmanager import TaskManager
-from todo.argumentparser import ArgUmentParser
+import sys
+import traceback
+from os import getenv
 
-TODO_FILE = "todo.json"
+from todo.argumentparser import ArgumentParser
+from todo.pathbuilder import PathBuilder
+from todo.taskmanager import TaskManager
+
+CONFIGURATION_FILE = "todo.json"
 
 
 def main():
-    manager = TaskManager(TODO_FILE)
-    argumentParser = ArgUmentParser(sys.argv[1:])
-    manager.load()
+    builder = PathBuilder()
+    file_path = builder.build(getenv("HOME", ""), CONFIGURATION_FILE)
+    manager = TaskManager(file_path)
+    argumentParser = ArgumentParser(sys.argv[1:])
+    manager.load_configuration()
     match argumentParser.command():
         case "add":
             manager.add(argumentParser.content())
